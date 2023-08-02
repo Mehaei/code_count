@@ -103,7 +103,7 @@ if __name__ == "__main__":
         print("*"*50)
         print(fpname)
         print("项目总注释：%d" % tcomment_lines)
-        print("顶目总空行：%d" % tblank_lines)
+        print("项目总空行：%d" % tblank_lines)
         print("项目总代码：%d" % tcode_lines)
         program_lines = tcomment_lines + tcode_lines
         print("项目总程序行数: %d" % program_lines)
