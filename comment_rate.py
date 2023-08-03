@@ -2,7 +2,7 @@
 # @Author: Mehaei
 # @Date:   2023-08-02 17:13:56
 # @Last Modified by:   Mehaei
-# @Last Modified time: 2023-08-02 21:23:17
+# @Last Modified time: 2023-08-03 14:28:56
 import argparse
 import os
 import sys
@@ -23,7 +23,14 @@ def one_file_total(fpname):
             line = line.strip()
             if "'''" in line or '"""' in line:
                 if "=" in line:
-                    is_var = True
+                    if line.startswith("#"):
+                        comment_lines += 1
+                        continue
+                    elif line.count("'''") == 2 or line.count('"""') == 2:
+                        code_lines += 1
+                        continue
+                    else:
+                        is_var = True
                 else:
                     if is_var:
                         code_lines += 1
@@ -35,6 +42,16 @@ def one_file_total(fpname):
                             is_comment = False
                             continue
                         else:
+                            if "(" in line and ")" in line and not line.startswith("#"):
+                                code_lines += 1
+                                continue
+                            elif line.count('"""') == 2 or line.count("'''") == 2:
+                                if "=" in line:
+                                    code_lines += 1
+                                    continue
+                                else:
+                                    comment_lines += 1
+                                    continue
                             is_comment = True
             if is_var:
                 code_lines += 1
@@ -103,7 +120,7 @@ if __name__ == "__main__":
         print("*"*50)
         print(fpname)
         print("项目总注释：%d" % tcomment_lines)
-        print("项目总空行：%d" % tblank_lines)
+        print("顶目总空行：%d" % tblank_lines)
         print("项目总代码：%d" % tcode_lines)
         program_lines = tcomment_lines + tcode_lines
         print("项目总程序行数: %d" % program_lines)
