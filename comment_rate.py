@@ -2,7 +2,7 @@
 # @Author: Mehaei
 # @Date:   2023-08-02 17:13:56
 # @Last Modified by:   Mehaei
-# @Last Modified time: 2023-08-03 14:28:56
+# @Last Modified time: 2023-08-28 14:25:48
 import argparse
 import os
 import sys
@@ -22,6 +22,14 @@ def one_file_total(fpname):
         for index, line in enumerate(f, start=1):
             line = line.strip()
             if "'''" in line or '"""' in line:
+                if is_var:
+                    code_lines += 1
+                    is_var = False
+                    continue
+                if is_comment:
+                    comment_lines += 1
+                    is_comment = False
+                    continue
                 if "=" in line:
                     if line.startswith("#"):
                         comment_lines += 1
@@ -31,28 +39,19 @@ def one_file_total(fpname):
                         continue
                     else:
                         is_var = True
+
                 else:
-                    if is_var:
+                    if "(" in line and ")" in line and not line.startswith("#"):
                         code_lines += 1
-                        is_var = False
                         continue
-                    else:
-                        if is_comment:
-                            comment_lines += 1
-                            is_comment = False
+                    elif line.count('"""') == 2 or line.count("'''") == 2:
+                        if "=" in line:
+                            code_lines += 1
                             continue
                         else:
-                            if "(" in line and ")" in line and not line.startswith("#"):
-                                code_lines += 1
-                                continue
-                            elif line.count('"""') == 2 or line.count("'''") == 2:
-                                if "=" in line:
-                                    code_lines += 1
-                                    continue
-                                else:
-                                    comment_lines += 1
-                                    continue
-                            is_comment = True
+                            comment_lines += 1
+                            continue
+                    is_comment = True
             if is_var:
                 code_lines += 1
             elif is_comment:
@@ -71,7 +70,9 @@ def one_file_total(fpname):
     print("代码: %d" % code_lines)
     program_lines = comment_lines + code_lines
     print("程序行数: %d" % program_lines)
-    comment_rate = comment_lines / program_lines
+    comment_rate = 1
+    if program_lines:
+        comment_rate = comment_lines / program_lines
     print("注释率: {:.2f}%".format(comment_rate * 100))
     print("#"*50)
     return comment_lines, blank_lines, code_lines
