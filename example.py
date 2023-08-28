@@ -2,7 +2,7 @@
 # @Author: Mehaei
 # @Date:   2023-08-02 20:57:42
 # @Last Modified by:   Mehaei
-# @Last Modified time: 2023-08-03 14:28:30
+# @Last Modified time: 2023-08-28 14:17:16
 # 导入模块
 import os
 
@@ -16,7 +16,13 @@ def main():
     msg = """
         message info
     """
+    msg2 = """
+        this test sql select * from test where
+        age >= 1 and 
+        sex = 'man'
+    """
     print(msg)
+    print(msg2)
     print(m1)
     print("""this code also""")
     print('''this code also''')
